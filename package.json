@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "example:hello": "node examples/01-hola-node/index.js",
-    "example:stack": "node examples/02-call-stack/index.js"
+    "example:stack": "node examples/02-call-stack/index.js",
+    "example:async": "node examples/03-asincronia/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/KeepCodingWeb20/backend-nodejs/issues"
   },
