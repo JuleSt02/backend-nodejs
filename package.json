@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "example:hello": "node examples/01-hola-node/index.js"
+    "example:hello": "node examples/01-hola-node/index.js",
+    "example:stack": "node examples/02-call-stack/index.js"
   },
   "repository": {
     "type": "git",
