@@ -1,7 +1,10 @@
 import http from 'node:http';
+import { renderPage } from './renderUtils.js';
+import { PORT, HOST } from './config.js';
 
-const port = 8000;
-const host = '127.0.0.1'; // Es lo mismo que localhost
+// Extrae estas variables a un archivo config.js
+// const port = 8000;
+// const host = '127.0.0.1'; // Es lo mismo que localhost
 
 const tasks = [
   {
@@ -18,8 +21,14 @@ const tasks = [
     "id": 3,
     "title": "Explicar Promise.all en directo",
     "done": false
+  },
+  {
+    "id": 4,
+    "title": "Refactorizar la función de render",
+    "done": true
   }
 ]
+
 
 const server = http.createServer((req, res) => {
 
@@ -40,8 +49,23 @@ const server = http.createServer((req, res) => {
     // TODO: devolver las tareas en formato HTML (una lista de: #id - {Nombre} - [x] / [ ])
     // Esta lista tiene que ser dinamica.
     if (req.method === 'GET' && url.pathname === '/tasks') {
-        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8' } );
-        res.end(JSON.stringify(tasks));
+        // res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8' } );
+        // res.end(JSON.stringify(tasks));
+        const htmlTasks = tasks.map(t => `<li>#${t.id} - ${t.title} - [${t.done ? 'x' : ' '}] </li>`);
+        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8' } );
+        // Que pasaria si no existen tareas?
+        // Podriamos llegar a poner un "fallback?"
+        res.end(
+            renderPage({
+                title: 'Listado de Tasks',
+                content: `
+                    <h1>Listado de Tasks</h1>
+                    <ul>
+                        ${htmlTasks}
+                    </ul>
+                `
+            })
+        );
         return;
     }
 
@@ -51,24 +75,15 @@ const server = http.createServer((req, res) => {
     // Devolver un content con un <h1> y un <p>
     if ( req.method === 'GET' && url.pathname === '/' ) {
         res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8' } );
-        res.end(`
-            <!doctype html>
-            <html>
-                <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <title>Server HTTP Básico</title>
-                </head>
-                <body>
+        res.end(
+            renderPage({
+                title: 'Server HTTP Básico',
+                content: `
                     <h1>Server HTTP basico</h1>
                     <p>Este ejemplo ya respira web SSR: una ruta HTML, una lista HTML y una ruta de health.</p>
-                    <ul>
-                        <li><a href="/tasks">Lista de tareas</a></li>
-                        <li><a href="/health">Estado de la aplicación</a></li>
-                    </ul>
-                </body>
-            </html>    
-        `);
+                `
+            })
+        );
         return;
     }
 
@@ -93,6 +108,6 @@ const server = http.createServer((req, res) => {
 
 });
 
-server.listen(port, host, () => {
-    console.log(`Servidor escuchando en http://${host}:${port}`);
+server.listen(PORT, HOST, () => {
+    console.log(`Servidor escuchando en http://${HOST}:${PORT}`);
 });
