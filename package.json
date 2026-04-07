@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "example:hello": "node examples/01-hola-node/index.js",
     "example:stack": "node examples/02-call-stack/index.js",
-    "example:async": "node examples/03-asincronia/index.js"
+    "example:async": "node examples/03-asincronia/index.js",
+    "example:http": "nodemon examples/04-http/server.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/KeepCodingWeb20/backend-nodejs/issues"
   },
-  "homepage": "https://github.com/KeepCodingWeb20/backend-nodejs#readme"
+  "homepage": "https://github.com/KeepCodingWeb20/backend-nodejs#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
 }
