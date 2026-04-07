@@ -58,7 +58,25 @@ const server = http.createServer( async (req, res) => {
         // res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8' } );
         // res.end(JSON.stringify(tasks));
         const tasks = await getTasks();
-        const htmlTasks = tasks.map(t => `<li>#${t.id} - ${t.title} - [${t.done ? 'x' : ' '}] </li>`);
+
+        const status = url.searchParams.get('status') ?? 'all';
+        
+        let filteredTasks;
+        if (status === 'pending') {
+            filteredTasks = tasks.filter(t => t.done === false);
+        } else if (status === 'done') {
+            filteredTasks = tasks.filter(t => t.done === true);
+        } else {
+            filteredTasks = tasks;
+        }
+
+        // console.log(req.url); // En node:http el objeto request no parsea la URL
+
+        // TODO: Si existe el parametro status: pending / done / all, filtrar por su estado.
+
+        // TODO: implementar un pequeño menu debajo del título para poder aplicar los filtros de esta pagina.
+
+        const htmlTasks = filteredTasks.map(t => `<li>#${t.id} - ${t.title} - [${t.done ? 'x' : ' '}] </li>`).join('');
         res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8' } );
         // Que pasaria si no existen tareas?
         // Podriamos llegar a poner un "fallback?"
@@ -67,8 +85,14 @@ const server = http.createServer( async (req, res) => {
                 title: 'Listado de Tareas',
                 content: `
                     <h1>Listado de Tasks</h1>
+                    <p>Filtrar tareas:</p>
+                    <nav>
+                        <a href="/tasks?status=all">Todas las tareas</a>
+                        <a href="/tasks?status=pending">Pendientes</a>
+                        <a href="/tasks?status=done">Finalizadas</a>
+                    </nav>
                     <ul>
-                        ${htmlTasks}
+                        ${htmlTasks.length === 0 ? '<li>No se han encontrado tareas</li>' : htmlTasks}
                     </ul>
                 `
             })
