@@ -1,36 +1,40 @@
 import http from 'node:http';
-import { renderPage } from './renderUtils.js';
+
 import { PORT, HOST } from './config.js';
+import { renderPage } from './renderUtils.js';
+import { getTasks } from './tasksRepository.js'
+
 
 // Extrae estas variables a un archivo config.js
 // const port = 8000;
 // const host = '127.0.0.1'; // Es lo mismo que localhost
 
-const tasks = [
-  {
-    "id": 1,
-    "title": "Preparar la clase de asincronia",
-    "done": false
-  },
-  {
-    "id": 2,
-    "title": "Revisar los ejemplos de fs/promises",
-    "done": true
-  },
-  {
-    "id": 3,
-    "title": "Explicar Promise.all en directo",
-    "done": false
-  },
-  {
-    "id": 4,
-    "title": "Refactorizar la función de render",
-    "done": true
-  }
-]
+// const tasks = [
+//   {
+//     "id": 1,
+//     "title": "Preparar la clase de asincronia",
+//     "done": false
+//   },
+//   {
+//     "id": 2,
+//     "title": "Revisar los ejemplos de fs/promises",
+//     "done": true
+//   },
+//   {
+//     "id": 3,
+//     "title": "Explicar Promise.all en directo",
+//     "done": false
+//   },
+//   {
+//     "id": 4,
+//     "title": "Refactorizar la función de render",
+//     "done": true
+//   }
+// ]
 
 
-const server = http.createServer((req, res) => {
+
+const server = http.createServer( async (req, res) => {
 
     //console.log(req.headers);
     console.log(req.url);
@@ -51,13 +55,14 @@ const server = http.createServer((req, res) => {
     if (req.method === 'GET' && url.pathname === '/tasks') {
         // res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8' } );
         // res.end(JSON.stringify(tasks));
+        const tasks = await getTasks();
         const htmlTasks = tasks.map(t => `<li>#${t.id} - ${t.title} - [${t.done ? 'x' : ' '}] </li>`);
         res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8' } );
         // Que pasaria si no existen tareas?
         // Podriamos llegar a poner un "fallback?"
         res.end(
             renderPage({
-                title: 'Listado de Tasks',
+                title: 'Listado de Tareas',
                 content: `
                     <h1>Listado de Tasks</h1>
                     <ul>
