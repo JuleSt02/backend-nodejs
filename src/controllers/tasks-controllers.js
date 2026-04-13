@@ -16,10 +16,18 @@ export async function tasksPageController(req, res, next) {
 
     // TODO: refactorizar a nuestro motor de plantillas.
     // Enviando el htmlTasks como variable
+    const status = req.query.status ?? 'all';
+    let filteredTasks = tasks;
+    if ( status === 'pending' ) {
+        filteredTasks = tasks.filter(t => t.done === false);
+    } else if ( status === 'done' ) {
+         filteredTasks = tasks.filter(t => t.done === true);
+    };
+
     res.render('tasks.html', {
         title: title,
         pendingTasks: pendingTasks,
         // htmlTasks: htmlTasks,
-        tasks: tasks,
+        tasks: filteredTasks,
     });
 }
