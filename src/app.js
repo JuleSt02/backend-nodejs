@@ -5,6 +5,7 @@ import morgan from 'morgan';
 
 import { pagesRouter } from './routes/pages-routes.js';
 import { utilitesRouter } from './routes/utilities-router.js';
+import { tasksRouter } from './routes/tasks-routes.js';
 
 // En app.js inicializamos SOLO la app de express
 const app = express();
@@ -19,6 +20,9 @@ app.use(morgan('tiny'));
 // Routes
 app.use('/', pagesRouter);
 app.use('/', utilitesRouter);
+app.use('/tasks', tasksRouter);
+// 1. Task router
+
 
 
 // Custom middleware
@@ -30,6 +34,44 @@ app.use('/', utilitesRouter);
 //     // Un middlware siempre tiene que contestar a la petición o llamar a next();
 //     next();
 // });
+
+app.use((req, res, next) => {
+    const renderHtml = res.locals.html; // Evaluo si el contenido es HTML.
+    if (!renderHtml) {
+        next(); // Si no es HTML, no tengo nada que hacer. Next();
+        return;
+    }
+
+    // En caso que si que sea HTML, construyo el template y lo envio.
+    const title = res.locals.title || 'Express APP';
+    const pendingTasks = res.locals.pendingTasks || 0;
+    const content = res.locals.content || '<p>Express App</p>';
+
+    res.send(`
+        <!doctype html>
+        <html>
+            <head>
+                <meta charset="utf-8">
+                <link rel="stylesheet" href="/app.css">
+                <link rel="icon" href="/icon.webp">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+                <title>${title}</title>
+            </head>
+            <body style="">
+                <nav class="container">
+                    <a href="/">Inicio</a>
+                    <a href="/tasks">Lista de tareas (${pendingTasks})</a>
+                    <a href="/health">Estado de la aplicación</a>
+                </nav>
+                ${content}
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+            </body>
+        </html>    
+    `);
+
+})
 
 // Handler 404
 // Si ha llegado hasta aqui es que no hay ninguna ruta que lo capture
