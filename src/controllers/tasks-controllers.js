@@ -1,4 +1,4 @@
-import { addNewTask, countPendingTasks, deleteTask, getTasks, updateTask } from '../data/tasksRepository.js';
+import { addNewTask, countPendingTasks, deleteTask, getTask, getTasks, updateTask } from '../data/tasksRepository.js';
 
 export async function newTaskPageController(req, res, next) {
     const title = 'Crear Nueva Tarea';
@@ -67,14 +67,12 @@ export async function tasksPageController(req, res, next) {
 }
 
 export async function taskPageController(req, res, next) {
-    const taskId = Number(req.params.taskId); // Los req.params siempre son string
-    const params = req.params;
+    const taskId = req.params.taskId; // Los req.params siempre son string
 
     const title = 'Detalle de Tarea';
     const pendingTasks = await countPendingTasks();
     // Obtener la tarea
-    const tasks = await getTasks();
-    const task = tasks.find(i => i.id === taskId);
+    const task = await getTask(taskId);
 
     if (!task) {
         // Devolver 404
@@ -88,7 +86,7 @@ export async function taskPageController(req, res, next) {
         pendingTasks: pendingTasks,
         errorMessage: null,
         values: {
-            id: task.id,
+            _id: task._id,
             title: task.title,
             done: task.done ? 'on' : ''
         }
@@ -98,9 +96,8 @@ export async function taskPageController(req, res, next) {
 export async function editTaskController(req, res, next) {
 
     // Obtener la tarea
-    const taskId = Number(req.params.taskId); 
-    const tasks = await getTasks();
-    const task = tasks.find(i => i.id === taskId);
+    const taskId = req.params.taskId;
+    const task = await getTask(taskId);
     if (!task) {
         // Devolver 404
         next();
@@ -140,9 +137,8 @@ export async function editTaskController(req, res, next) {
 
 export async function deleteTaskController(req, res, next) {
     // Obtener la tarea
-    const taskId = Number(req.params.taskId); 
-    const tasks = await getTasks();
-    const task = tasks.find(i => i.id === taskId);
+    const taskId = req.params.taskId;
+    const task = await getTask(taskId);
     if (!task) {
         // Devolver 404
         next();

@@ -1,8 +1,8 @@
 <%- include('partials/page-start.html') %>
 
 <h1><%= title %></h1>
-<% if (values.id) { %>
-    <span>Id de la tarea: <%= values.id %></span>
+<% if (values._id) { %>
+    <span>Id de la tarea: <%= values._id %></span>
 <% } %>
 
 <section class="card">
@@ -13,7 +13,7 @@
         <% } %>
 
          <!-- Los métodos válidos para un form html son POST i GET -->
-        <form method="POST" action="/tasks<%= values.id ? '/edit/'+values.id : ''%>">
+        <form method="POST" action="/tasks<%= values._id ? '/edit/'+values._id : ''%>">
 
             <label for="title">Título</label>
             <input
@@ -31,38 +31,39 @@
 
         </form>
 
-        <% if (values.id) { %>
+        <% if (values._id) { %>
              <button id="deleteBtn">Eliminar Tarea</button>
         <% } %>
 
     </div>
 </section>
+<% if (values._id) { %>
+    <script>
+        // Detectar cuando se presiona el botón
+        const btnElement = document.querySelector('#deleteBtn');
+        // console.log(btnElement);
 
-<script>
-    // Detectar cuando se presiona el botón
-    const btnElement = document.querySelector('#deleteBtn');
-    // console.log(btnElement);
+        // Conocer el id
+        const taskId = "<%= values._id %>";
 
-    // Conocer el id
-    const taskId = "<%= values.id %>";
+        // Llamar a una url con ese id (DELETE /tasks/id)
+        btnElement.addEventListener('click', () => {
+            // Todo lo que metamos aqui dentro, se ejecutará con el click
+            const options = {
+                method: "DELETE"
+            };
 
-    // Llamar a una url con ese id (DELETE /tasks/id)
-    btnElement.addEventListener('click', () => {
-        // Todo lo que metamos aqui dentro, se ejecutará con el click
-        const options = {
-            method: "DELETE"
-        };
+            fetch("/tasks/" + taskId, options)
+                .then(response => response.json())
+                .then(data => {
+                    /** Procesar los datos **/
+                    // console.log(data);
+                    window.location.href = '/tasks'; // Navegamos mediante JS a la pagina de tareas
+                });
+        });
 
-        fetch("/tasks/" + taskId, options)
-            .then(response => response.json())
-            .then(data => {
-                /** Procesar los datos **/
-                // console.log(data);
-                window.location.href = '/tasks'; // Navegamos mediante JS a la pagina de tareas
-            });
-    });
-
-</script>
+    </script>
+<% } %>
 
 
 <%- include('partials/page-end.html') %>
