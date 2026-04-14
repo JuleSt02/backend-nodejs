@@ -32,7 +32,6 @@ export async function createTaskController(req, res, next) {
       done: req.body.done === 'on' ? true : false // req.body.done!!
     };
     const createdTask = await addNewTask(newTask);
-    console.log(createdTask);
     res.redirect('/tasks/');
 }
 

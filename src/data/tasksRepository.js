@@ -1,10 +1,18 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 
+import { dbClient } from '../lib/database.js';
+
+// export async function getTasks() {
+//     const fileUrl = new URL('./tasks.json', import.meta.url);
+//     const fileContents = await readFile(fileUrl);
+//     return JSON.parse(fileContents);
+// }
+
 export async function getTasks() {
-    const fileUrl = new URL('./tasks.json', import.meta.url);
-    const fileContents = await readFile(fileUrl);
-    return JSON.parse(fileContents);
+    const result = await dbClient.collection('tasks').find({}).toArray();
+    console.log(result);
+    return result;
 }
 
 export async function countPendingTasks() {

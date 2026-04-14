@@ -12,7 +12,8 @@
     "example:stack": "node examples/02-call-stack/index.js",
     "example:async": "node examples/03-asincronia/index.js",
     "example:http": "nodemon examples/04-http/server.js",
-    "dev": "node --watch --env-file=.env src/bin/www.js"
+    "dev": "node --watch --env-file=.env src/bin/www.js",
+    "test:database": "node --env-file=.env src/lib/database.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
   "dependencies": {
     "ejs": "^5.0.2",
     "express": "^5.2.1",
+    "mongodb": "^7.1.1",
     "morgan": "^1.10.1"
   }
 }
