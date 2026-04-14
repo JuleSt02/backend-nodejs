@@ -1,9 +1,9 @@
-import { addNewTask, countPendingTasks, getTasks } from '../data/tasksRepository.js';
+import { addNewTask, countPendingTasks, getTasks, updateTask } from '../data/tasksRepository.js';
 
 export async function newTaskPageController(req, res, next) {
     const title = 'Crear Nueva Tarea';
     const pendingTasks = await countPendingTasks();
-    res.render('new-task.html', {
+    res.render('task.html', {
         title: title,
         pendingTasks: pendingTasks,
         errorMessage: null,
@@ -18,7 +18,7 @@ export async function createTaskController(req, res, next) {
     if ( !req.body.title || req.body.title === '' ) {
         // El usuario debe acabar de insertar los datos
         const errorMessage = 'El título es obligatorio';
-        res.render('new-task.html', {
+        res.render('task.html', {
             title: title,
             pendingTasks: pendingTasks,
             errorMessage: errorMessage,
@@ -84,13 +84,57 @@ export async function taskPageController(req, res, next) {
     }
 
     // Pasar los datos a la plantilla
-    res.render('new-task.html', {
+    res.render('task.html', {
         title: title,
         pendingTasks: pendingTasks,
         errorMessage: null,
         values: {
+            id: task.id,
             title: task.title,
             done: task.done ? 'on' : ''
         }
     });
+}
+
+export async function editTaskController(req, res, next) {
+
+    // Obtener la tarea
+    const taskId = Number(req.params.taskId); 
+    const tasks = await getTasks();
+    const task = tasks.find(i => i.id === taskId);
+    if (!task) {
+        // Devolver 404
+        next();
+        return;
+    }
+
+    // Verificar datos (fallback)
+     if ( !req.body.title || req.body.title === '' ) {
+        // El usuario debe acabar de insertar los datos
+        const errorMessage = 'El título es obligatorio';
+        const pendingTasks = await countPendingTasks();
+        res.render('task.html', {
+            title: title,
+            pendingTasks: pendingTasks,
+            errorMessage: errorMessage,
+            values: {
+                id: task.id,
+                ...req.body
+            }
+        });
+        return;
+    }
+
+    // Actualizar la tarea
+    await updateTask(
+        taskId,
+        {
+            id: taskId,
+            title: req.body.title,
+            done: req.body.done === 'on' ? true : false
+        }
+    );
+
+    // Devolver algo -> redirect
+    res.redirect('/tasks');
 }

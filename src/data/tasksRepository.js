@@ -28,3 +28,19 @@ export async function addNewTask(task) {
     // { id: 5, title: 'Crear la funcion new task', done: false }
     return newTask;
 }
+
+export async function updateTask(taskId, newTask) {
+    // Obtener el fichero
+    const tasks = await getTasks();
+
+    const taskIdx = tasks.findIndex(i => i.id === taskId);
+    if (taskIdx === -1) {
+        return;
+    }
+
+    tasks[taskIdx] = newTask;
+
+    const fileUrl = new URL('./tasks.json', import.meta.url);
+    await writeFile(fileUrl, JSON.stringify(tasks));
+    return newTask;
+}

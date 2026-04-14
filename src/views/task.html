@@ -1,6 +1,9 @@
 <%- include('partials/page-start.html') %>
 
-<h1>Nueva Tarea</h1>
+<h1><%= title %></h1>
+<% if (values.id) { %>
+    <span>Id de la tarea: <%= values.id %></span>
+<% } %>
 
 <section class="card">
     <div class="card-body">
@@ -9,8 +12,8 @@
             <span><%= errorMessage %></span>
         <% } %>
 
-
-        <form method="POST" action="/tasks">
+         <!-- Los métodos válidos para un form html son POST i GET -->
+        <form method="POST" action="/tasks<%= values.id ? '/edit/'+values.id : ''%>">
 
             <label for="title">Título</label>
             <input
