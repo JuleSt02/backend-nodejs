@@ -7,6 +7,10 @@ console.log("Inicializando SeedDb");
 const connection = await connectToDB();
 console.log(`Conectado a MongoDB: ${connection.name}`);
 
+// TODO:
+// Estaria bien lanzar una confirmación al usuari
+// Oye, esto lo elimina todo, seguimos?
+
 await seedUsers();
 await seedTasks();
 
@@ -33,22 +37,40 @@ async function seedUsers() {
 
 async function seedTasks() {
 
+    // const jd = await User.findOne({ email: 'jd@kc.io' });
+    // const ad = await User.findOne({ email: 'ad@kc.io' });
+    const [jd, ad] = await Promise.all([
+        User.findOne({ email: 'jd@kc.io' }),
+        User.findOne({ email: 'ad@kc.io' })
+    ]);
+
     const TASKS = [
         {
-            "title": "Preparar la clase de asincronía",
-            "done": true
+            title: "Preparar la clase de asincronía",
+            done: true,
+            owner: jd._id
         },
         {
-            "title": "Revisar los ejemplos de fs/promises",
-            "done": false
+            title: "Revisar los ejemplos de fs/promises",
+            done: false,
+            owner: ad._id
         },
         {
-            "title": "Explicar Promise.all en directo",
-            "done": true
+            title: "Explicar Promise.all en directo",
+            done: true,
+            owner: jd._id
         },
         {
-            "title": "Refactorizar la función de render",
-            "done": false
+            title: "Refactorizar la función de render",
+            done: false,
+            owner: ad._id
         }
-    ]
+    ];
+
+    const deleteResult = await Task.deleteMany({});
+    console.log(`Eliminadas [${deleteResult.deletedCount}] Task`);
+
+    const insertedTasks = await Task.insertMany(TASKS);
+    console.log(`Insertados [${insertedTasks.length}] Task`);
+
 }
