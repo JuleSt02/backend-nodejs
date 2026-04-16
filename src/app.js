@@ -9,6 +9,8 @@ import { utilitesRouter } from './routes/utilities-router.js';
 import { tasksRouter } from './routes/tasks-routes.js';
 import { authRouter } from './routes/auth-router.js';
 
+import { dataInViews } from './middleware/views-middleware.js';
+
 // En app.js inicializamos SOLO la app de express
 const app = express();
 const appDir = dirname(fileURLToPath(import.meta.url)); // __dirname
@@ -18,6 +20,7 @@ const appDir = dirname(fileURLToPath(import.meta.url)); // __dirname
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(join(appDir, '../public')));
 app.use(morgan('tiny'));
+app.use(dataInViews);
 
 // Configuración del motor de plantillas
 app.set('view engine', 'html');

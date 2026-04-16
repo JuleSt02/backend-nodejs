@@ -2,10 +2,8 @@ import { addNewTask, countPendingTasks, deleteTask, getTask, getTasks, updateTas
 
 export async function newTaskPageController(req, res, next) {
     const title = 'Crear Nueva Tarea';
-    const pendingTasks = await countPendingTasks();
     res.render('task.html', {
         title: title,
-        pendingTasks: pendingTasks,
         errorMessage: null,
         values: {},
     });
@@ -13,14 +11,12 @@ export async function newTaskPageController(req, res, next) {
 
 export async function createTaskController(req, res, next) {
     const title = 'Crear Nueva Tarea';
-    const pendingTasks = await countPendingTasks();
 
     if ( !req.body.title || req.body.title === '' ) {
         // El usuario debe acabar de insertar los datos
         const errorMessage = 'El título es obligatorio';
         res.render('task.html', {
             title: title,
-            pendingTasks: pendingTasks,
             errorMessage: errorMessage,
             values: req.body
         });
@@ -39,7 +35,6 @@ export async function createTaskController(req, res, next) {
 // Refactorizar este controlador para utilizar el "motor de plantillas" que hemos generado con el middleware
 export async function tasksPageController(req, res, next) {
     const title = 'Listado de Tareas';
-    const pendingTasks = await countPendingTasks();
     const tasks = await getTasks();
     console.log(tasks);
     // TODO: implementa el done[x] o [ ] en la vista de ejs
@@ -61,7 +56,6 @@ export async function tasksPageController(req, res, next) {
 
     res.render('tasks.html', {
         title: title,
-        pendingTasks: pendingTasks,
         // htmlTasks: htmlTasks,
         tasks: filteredTasks,
     });
@@ -71,7 +65,6 @@ export async function taskPageController(req, res, next) {
     const taskId = req.params.taskId; // Los req.params siempre son string
 
     const title = 'Detalle de Tarea';
-    const pendingTasks = await countPendingTasks();
     // Obtener la tarea
     const task = await getTask(taskId);
 
@@ -84,7 +77,6 @@ export async function taskPageController(req, res, next) {
     // Pasar los datos a la plantilla
     res.render('task.html', {
         title: title,
-        pendingTasks: pendingTasks,
         errorMessage: null,
         values: {
             _id: task._id,
@@ -109,10 +101,8 @@ export async function editTaskController(req, res, next) {
      if ( !req.body.title || req.body.title === '' ) {
         // El usuario debe acabar de insertar los datos
         const errorMessage = 'El título es obligatorio';
-        const pendingTasks = await countPendingTasks();
         res.render('task.html', {
             title: title,
-            pendingTasks: pendingTasks,
             errorMessage: errorMessage,
             values: {
                 id: task.id,
