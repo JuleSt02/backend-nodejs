@@ -10,7 +10,7 @@ import { tasksRouter } from './routes/tasks-routes.js';
 import { authRouter } from './routes/auth-router.js';
 
 import { dataInViews } from './middleware/views-middleware.js';
-import { sessionMiddleware } from './middleware/auth-middleware.js';
+import { sessionMiddleware, sessionInViews } from './middleware/auth-middleware.js';
 
 // En app.js inicializamos SOLO la app de express
 const app = express();
@@ -25,6 +25,7 @@ app.use(dataInViews);
 
 // Auth middlewares
 app.use(sessionMiddleware);
+app.use(sessionInViews);
 
 // Configuración del motor de plantillas
 app.set('view engine', 'html');

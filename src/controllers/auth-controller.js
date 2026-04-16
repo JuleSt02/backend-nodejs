@@ -51,3 +51,14 @@ export async function loginActionController(req, res, next) {
     res.redirect('/');
 
 }
+
+export function logoutActionController(req, res, next) {
+    req.session.regenerate((err) => {
+        if (err) {
+            next(err);
+            return;
+        }
+        // La session se ha borrado bien
+        res.redirect('/');
+    });
+}
