@@ -1,4 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
+import { hash, compare } from 'bcrypt';
+
 import { MODELS } from './models.js';
 
 // name, email, password
@@ -15,12 +17,40 @@ const userSchema = new Schema(
             unique: true,
         },
         password: {
-            type: String,
+            type: String, // Guardar encriptado
         }
     },
     {
         timestamps: true,
     }
 );
+
+// HASH
+// a -> xzy | xzy
+
+// -------
+// Métodos custom
+// -------
+
+// A: hash
+// Método de clase
+// function hashPassword(clearPassword) {
+//     return hash(clearPassword, 7);
+// }
+userSchema.statics.hashPassword = (clearPassword) => {
+    return hash(clearPassword, 7);
+}
+
+// B: compare
+// Metodo de instancia
+// Necesito acceder a la propia instancia para conocer su hash
+// dentro de "this" tenemos toda la instancia
+// function comparePassword(plainPassword) {
+//     return compare(plainPassword, hash);
+// }
+userSchema.methods.comparePassword = function(plainPassword) {
+    return compare(plainPassword, this.password);
+}
+
 
 export const User = mongoose.models.User || mongoose.model(MODELS.USER, userSchema);

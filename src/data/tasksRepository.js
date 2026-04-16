@@ -110,6 +110,6 @@ export async function deleteTask(taskId) {
     // const deleteResult = dbClient.collection(COLLECTION).deleteOne({
     //     _id: new ObjectId(taskId),
     // });
-    const deleteResult = Task.findByIdAndDelete(taskId);
+    const deleteResult = await Task.findByIdAndDelete(taskId);
     return deleteResult;
 }

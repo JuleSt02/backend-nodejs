@@ -23,14 +23,19 @@ process.exit(0);
 async function seedUsers() {
 
     const USERS = [
-        { name: 'Joe Don', email: 'jd@kc.io', password: '1234' },
-        { name: 'Admin', email: 'ad@kc.io', password: '1234' },
+        { name: 'Joe Don', email: 'jd@kc.io', password: await User.hashPassword('1234') },
+        { name: 'Admin', email: 'ad@kc.io', password: await User.hashPassword('1234') },
     ];
 
     const deleteResult = await User.deleteMany({});
     console.log(`Eliminados [${deleteResult.deletedCount}] User`);
 
     const insertedUsers = await User.insertMany(USERS);
+
+    // const jd = insertedUsers[0];
+    // console.log(`Password correcto [1234]? ${await jd.comparePassword('1234')} - ${jd.password}`)
+    // console.log(`Password correcto [1235]? ${await jd.comparePassword('1235')} - ${jd.password}`)
+
     console.log(`Insertados [${insertedUsers.length}] User`);
 
 }
