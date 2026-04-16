@@ -5,6 +5,10 @@
 <section class="card">
     <section class="card-body">
 
+        <% if (errorMessage) { %>
+            <span><%= errorMessage %></span>
+        <% } %>
+
         <form method="POST" action="/login">
 
             <label for="email">Correo electónico</label>
